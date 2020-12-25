@@ -11,6 +11,7 @@ function Body({ spotify }) {
   const [{ discover_weekly }, dispatch] = useStateValue();
 
   const playPlaylist = (id) => {
+    console.log('clicked playlist', id)
     spotify
       .play({
         context_uri: `spotify:playlist:37i9dQZEVXcJZyENOWUFo7`,
@@ -30,22 +31,28 @@ function Body({ spotify }) {
   };
 
   const playSong = (id) => {
-    spotify
-      .play({
-        uris: [`spotify:track:${id}`],
-      })
-      .then((res) => {
-        spotify.getMyCurrentPlayingTrack().then((r) => {
-          dispatch({
-            type: "SET_ITEM",
-            item: r.item,
-          });
-          dispatch({
-            type: "SET_PLAYING",
-            playing: true,
-          });
-        });
-      });
+    console.log('in playsong', id)
+
+    //https://api.spotify.com/v1/tracks/
+    
+
+
+    // spotify
+    //   .play({
+    //     uris: [`spotify:track:${id}`],
+    //   })
+    //   .then((res) => {
+    //     spotify.getMyCurrentPlayingTrack().then((r) => {
+    //       dispatch({
+    //         type: "SET_ITEM",
+    //         item: r.item,
+    //       });
+    //       dispatch({
+    //         type: "SET_PLAYING",
+    //         playing: true,
+    //       });
+    //     });
+    //   });
   };
 
   return (
@@ -53,7 +60,7 @@ function Body({ spotify }) {
       <Header spotify={spotify} />
 
       <div className="body__info">
-        {/* <img src={discover_weekly?.images[0].url} alt="" /> */}
+        <img src={discover_weekly?.images[0].url} alt="" />
         <div className="body__infoText">
           <strong>PLAYLIST</strong>
           <h2>Discover Weekly</h2>

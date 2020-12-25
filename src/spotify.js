@@ -11,6 +11,10 @@ const scopes = [
   "user-read-playback-state",
   "user-top-read",
   "user-modify-playback-state",
+  "playlist-read-collaborative",
+  "streaming",
+  "user-read-email",
+  "user-read-private"
 ];
 
 //get bearer token returned from spotify login
