@@ -165,7 +165,10 @@ class SpotifyPlayerContainer extends Component<
   //   }
 
   private startPlayback = (spotify_uri: string) => {
-    console.log('in initial startPlayback', spotify_uri)
+    console.log('startPlayback access token', this.state.spotifyAccessToken, 'uri', spotify_uri)
+    //spotify_uri = "spotify:track:5ya2gsaIhTkAuWYEMB0nw5"
+    spotify_uri = `spotify:track:${spotify_uri}`
+    console.log('id uri', spotify_uri)
    // const _token = this.state.spotifyAccessToken;
     fetch("https://api.spotify.com/v1/me/player/play?" +
         "device_id=" + this.state.spotifyDeviceId, {
@@ -258,10 +261,6 @@ class SpotifyPlayerContainer extends Component<
   render() {
     console.log('paused', this.state.playbackPaused, 'ready',this.state.spotifyPlayerReady)
     console.log('song id', this.props.playingRecordingId)
-    // console.log('state spotifyPlayerReady', this.state.spotifyPlayerReady);
-    // console.log('state playbackOn', this.state.playbackOn);
-    // console.log('state playingRecordingId', this.props.playingRecordingId);
-    // console.log('state playbackPaused', this.state.playbackPaused);
     return (
       <div className={styles.app}>
         <h3>Spotify</h3>
