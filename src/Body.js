@@ -7,7 +7,9 @@ import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 
-function Body({ spotify }) {
+
+function Body({ spotify, token }) {
+  console.log(spotify)
   const [{ discover_weekly }, dispatch] = useStateValue();
 
   const playPlaylist = (id) => {
@@ -16,6 +18,7 @@ function Body({ spotify }) {
         context_uri: `spotify:playlist:37i9dQZEVXcJZyENOWUFo7`,
       })
       .then((res) => {
+        console.log('res',res)
         spotify.getMyCurrentPlayingTrack().then((r) => {
           dispatch({
             type: "SET_ITEM",
@@ -30,22 +33,26 @@ function Body({ spotify }) {
   };
 
   const playSong = (id) => {
-    spotify
-      .play({
-        uris: [`spotify:track:${id}`],
-      })
-      .then((res) => {
-        spotify.getMyCurrentPlayingTrack().then((r) => {
-          dispatch({
-            type: "SET_ITEM",
-            item: r.item,
-          });
-          dispatch({
-            type: "SET_PLAYING",
-            playing: true,
-          });
-        });
-      });
+    console.log('iddddd', id)
+
+    
+    // spotify
+    //   .play({
+    //     uris: [`spotify:track:${id}`],
+    //   })
+    //   .then((res) => {
+    //     spotify.getMyCurrentPlayingTrack().then((r) => {
+    //       dispatch({
+    //         type: "SET_ITEM",
+    //         item: r.item,
+    //       });
+    //       dispatch({
+    //         type: "SET_PLAYING",
+    //         playing: true,
+    //       });
+    //     });
+    //   });
+    
   };
 
   return (
@@ -72,7 +79,7 @@ function Body({ spotify }) {
         </div>
 
         {discover_weekly?.tracks.items.map((item) => (
-          <SongRow playSong={playSong} track={item.track} />
+          <SongRow playSong={playSong} track={item.track} token={token}/>
         ))}
       </div>
     </div>

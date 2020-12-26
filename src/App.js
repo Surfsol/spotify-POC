@@ -12,14 +12,14 @@ const spotifyApi = new SpotifyWebApi();
 function App() {
   //bring in token to switch between login and player
   const [{ token }, dispatch] = useStateValue();
-
+  //console.log('token', token)
   useEffect(() => {
     // Set token
     const hash = getTokenFromResponse();
     //after get access token, clear from url
     window.location.hash = "";
     let _token = hash.access_token;
-
+     
     if (_token) {
       spotifyApi.setAccessToken(_token);
 
@@ -28,6 +28,8 @@ function App() {
         token: _token,
       });
 
+      
+      
       spotifyApi.getPlaylist("37i9dQZEVXcJZyENOWUFo7").then((response) =>
         dispatch({
           type: "SET_DISCOVER_WEEKLY",
@@ -47,14 +49,7 @@ function App() {
         spotify: spotifyApi,
       });
 
-      //get user
-      spotifyApi.getMe().then((user) => {
-        console.log('show user', user)
-        dispatch({
-          type: "SET_USER",
-          user,
-        });
-      });
+      
 
       spotifyApi.getUserPlaylists().then((playlists) => {
         dispatch({
@@ -68,7 +63,7 @@ function App() {
   return (
     <div className="app">
       {!token && <Login />}
-      {token && <Player spotify={spotifyApi} />}
+      {token && <Player token={token} spotify={spotifyApi} />}
     </div>
   );
 }
