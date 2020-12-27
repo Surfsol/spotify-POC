@@ -4,8 +4,6 @@ import SpotifyPlayerContainer from './SpotifyPlayer/SpotifyPlayerContainer'
 
 function SongRow({ track, token }) {
   const [trackId, setTrackId] = useState()
-  
-  console.log(track);
 
  if (trackId){
    return (
