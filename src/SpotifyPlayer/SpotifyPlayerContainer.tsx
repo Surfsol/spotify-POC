@@ -3,8 +3,10 @@ import React, { Component } from 'react';
 import { ScriptCache } from './ScriptCache';
 import { SpotifyAccess } from './SpotifyAccess';
 import { getSpotifyAccess } from './LocalStorageData';
-import { FaPause, FaPlay } from 'react-icons/fa';
+
 import styles from './App.module.css';
+
+import MusicPlayer from './MusicPlayer'
 
 // must add "@types/spotify-web-playback-sdk": "^0.1.7", dependency
 
@@ -12,6 +14,12 @@ interface ISpotifyPlayerProps {
   playingRecordingId: string;
   token: string;
 }
+
+// interface States{
+//   loadingState?: string,
+//   playbackOn?: boolean,
+//   playbackPaused?: boolean,
+// }
 
 interface ISpotifyPlayerState {
   loadingState: string;
@@ -59,7 +67,7 @@ class SpotifyPlayerContainer extends Component<
       playbackPaused: false,
     };
   }
-
+  
   private spotifySDKCallback = () => {
     window.onSpotifyWebPlaybackSDKReady = () => {
       if (this.state.spotifyAccess !== SpotifyAccess.DENIED) {
@@ -150,87 +158,10 @@ class SpotifyPlayerContainer extends Component<
     }
   };
 
-  private startPlayback = (spotify_uri: string) => {
-    console.log(
-      'startPlayback access token',
-      this.state.spotifyAccessToken,
-      'uri',
-      spotify_uri
-    );
-    //spotify_uri = "spotify:track:5ya2gsaIhTkAuWYEMB0nw5"
-    spotify_uri = `spotify:track:${spotify_uri}`;
-    console.log('id uri', spotify_uri);
-    // const _token = this.state.spotifyAccessToken;
-    fetch(
-      'https://api.spotify.com/v1/me/player/play?' +
-        'device_id=' +
-        this.state.spotifyDeviceId,
-      {
-        method: 'PUT',
-        body: JSON.stringify({ uris: [spotify_uri] }),
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.state.spotifyAccessToken}`,
-        },
-      }
-    )
-      .then((resolve) => {
-        console.log('resolve status', resolve.status);
-        if (resolve.status === 403) {
-          this.setState({
-            loadingState: 'you need to upgrade to premium for playback',
-            spotifyAccess: SpotifyAccess.NO_PREMIUM,
-          });
-        } else {
-          this.setState({
-            loadingState: 'playback started',
-            playbackOn: true,
-            playbackPaused: false,
-          });
-          //  console.log('Started playback', this.state);
-        }
-      })
-      .catch((error) => {
-        this.setState({ loadingState: 'playback error: ' + error });
-      });
-  };
-
-  private resumePlayback = () => {
-    console.log('in resumePlayback');
-    fetch(
-      'https://api.spotify.com/v1/me/player/play?' +
-        'device_id=' +
-        this.state.spotifyDeviceId,
-      {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.state.spotifyAccessToken}`,
-        },
-      }
-    ).then(() => {
-      this.setState({ playbackPaused: false });
-    });
-    console.log('Started playback', this.state);
-  };
-
-  private pauseTrack = () => {
-    console.log('in paused');
-    fetch(
-      'https://api.spotify.com/v1/me/player/pause?' +
-        'device_id=' +
-        this.state.spotifyDeviceId,
-      {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.state.spotifyAccessToken}`,
-        },
-      }
-    ).then(() => {
-      this.setState({ playbackPaused: true });
-    });
-  };
+  changeState = (pairs: any) => {
+    this.setState(pairs)
+  }
+  
 
   render() {
     console.log(
@@ -243,35 +174,14 @@ class SpotifyPlayerContainer extends Component<
     return (
       <div className={styles.app}>
         <h3>Spotify</h3>
-        <div className={styles.player}>
-          {this.state.spotifyPlayerReady && (
-            <div
-              onClick={() => {
-                console.log('in onClick', this.state.playbackOn);
-                if (!this.state.playbackOn) {
-                  this.startPlayback(this.props.playingRecordingId);
-                } else if (this.state.playbackPaused) {
-                  this.resumePlayback();
-                }
-              }}
-            >
-              <FaPlay />
-            </div>
-          )}
-          {this.state.spotifyPlayerReady && this.state.playbackOn && (
-            <div
-              onClick={() => {
-                if (!this.state.playbackPaused) {
-                  console.log('onClick pause 280');
-                  this.pauseTrack();
-                }
-              }}
-            >
-              <FaPause />
-            </div>
-          )}
-        </div>
-
+        {this.state.spotifyPlayerReady && <MusicPlayer
+        spotifyAccessToken={this.state.spotifyAccessToken}
+        playbackOn={this.state.playbackOn}
+        playingRecordingId={this.props.playingRecordingId} 
+        spotifyDeviceId={this.state.spotifyDeviceId}
+        playbackPaused={this.state.playbackPaused}
+        changeState={this.changeState}
+        />}
         <p className={styles.statusMessage}>{this.state.loadingState}</p>
       </div>
     );
