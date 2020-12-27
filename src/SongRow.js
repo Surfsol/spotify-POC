@@ -1,11 +1,17 @@
-import React from "react";
+import React, {useState} from "react";
 import "./SongRow.css";
+import SpotifyPlayerContainer from './SpotifyPlayer/SpotifyPlayerContainer'
 
-function SongRow({ track, playSong }) {
-  //https://developer.spotify.com/documentation/web-api/reference/tracks/get-track/
-  console.log('tracks from songrow',track);
-  return (
-    <div className="songRow" onClick={() => playSong(track.id)}>
+function SongRow({ track, token }) {
+  const [trackId, setTrackId] = useState()
+
+ if (trackId){
+   return (
+    <SpotifyPlayerContainer  token={token} playingRecordingId={trackId}/> 
+   )
+ } else {
+  return ( 
+    <div className="songRow" onClick={() => setTrackId(track.id)}>
       <img className="songRow__album" src={track.album.images[0].url} alt="" />
       <div className="songRow__info">
         <h1>{track.name}</h1>
@@ -16,6 +22,7 @@ function SongRow({ track, playSong }) {
       </div>
     </div>
   );
+}
 }
 
 export default SongRow;
